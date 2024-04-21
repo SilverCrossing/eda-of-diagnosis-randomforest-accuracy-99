@@ -41,7 +41,7 @@ df.info()   # 查看df文件中的信息
 
 df.drop(["id", "Unnamed: 32"], axis=1, inplace=True)   # x.drop()方法删除指定行列（axis=1为删除列）
 # 采用inplace=True之后，原数组名对应的内存值直接改变，也就是说原数组直接就被替换
-print(df.head())   # x.head()取数据的前n行数据，默认是前5行，不对数据内容做任何改变。没有print语句则x.head()方法只是选择数据
+df.head()   # x.head()取数据的前n行数据，默认是前5行，不对数据内容做任何改变。没有print语句则x.head()方法只是选择数据
 
 
 # In[ ]:
@@ -85,18 +85,19 @@ import seaborn as sns
 
 
 # Distribution of all features by target(diagnosis)
-plt.figure(figsize=(10, 20))   # 创建宽10高20的表格
+plt.figure(figsize=(30, 25))   # 创建宽30高25的表格
 
 # enumerate在字典上是枚举、列举的意思，也可用于列表/文件，对于一个可迭代的（iterable）/可遍历的对象（如列表、字符串）enumerate将其组成一个索引序列
 # 利用它可以同时获得索引和值，可以在for循环中得到计数
 for i, col in enumerate(df.columns[:-1], 1):
-    plt.subplot(10, 3, i)   # 创建10行3列的子图，操作其中第i个
+    plt.subplot(6, 5, i)   # 创建6行5列的子图，操作其中第i个
     # 创建直方图，x轴为df[col]，hue参数来根据df["diagnosis"]列对数据进行颜色区分，使用"dodge"模式来堆叠不同组别的直方柱
     sns.histplot(x=df[col], hue=df["diagnosis"], multiple="dodge")
     plt.title(f"Distribution of {col} Data")   # 设定表格标题
     plt.tight_layout()   # 自动调整子图参数，使其填充整个图像区域
     plt.xticks(rotation=90)   # x.xticks()获取或设置当前x轴刻度位置和标签。若不传递任何参数，则返回当前刻度值，rotation=90让文本标签逆时针旋转90度
     plt.plot()   # 画图
+plt.show()
 
 
 # In[ ]:
@@ -123,9 +124,10 @@ df_corr["diagnosis"].sort_values(ascending=False)   # 这样做的目的是为�
 
 plt.figure(figsize=(15, 15))
 sns.heatmap(df_corr, fmt=".2f", annot=True, cmap="YlGnBu")   # 创建一个热图（heatmap），用于显示df_corr数据框中的相关系数矩阵
+plt.title("数据相关度矩阵")
 # fmt=".2f"设置热图中注释的数字格式，.2f表示保留两位小数
 # annot参数设置为True表示在热图的每个单元格中添加注释，即显示相关系数的具体数值
-# cmap参数指定热图的颜色映射方案，"YlGnBu"是一种颜色渐变方案，从黄色（Yellow）到绿色（Green）再到蓝色（Blue）
+# cmap参数指定热图的颜色映射方案，"YlGnBu"是一种颜色渐变方案，从黄色（Yellow）到绿色（Green）再到蓝色（Blue）。"OrRd"则是从橙色到红色
 
 plt.show()
 
@@ -134,9 +136,9 @@ plt.show()
 
 
 # Check skewness of all features
-plt.figure(figsize=(10, 20))
+plt.figure(figsize=(30, 25))
 for i, col in enumerate(df.columns[:-1], 1):
-    plt.subplot(10, 3, i)
+    plt.subplot(6, 5, i)
     skewness = df[col].skew()   # 计算当前列的偏度。偏度是衡量数据分布对称性的指标，偏度值越大，表示数据分布越不对称
     sns.distplot(df[col], kde=True, label="Skew = %.3f" %(skewness))   # 绘制当前列的分布图，kde=True表示绘制核密度估计，label显示偏度值
     plt.title(f"Skewness of {col} Data")
@@ -144,6 +146,7 @@ for i, col in enumerate(df.columns[:-1], 1):
     plt.legend(loc="best")   # 显示图例，位置在最佳位置
     plt.xticks(rotation=90)
     plt.plot()
+plt.show()
 
 
 """
@@ -188,28 +191,56 @@ S=(1/n)*(sum((i=1, n), ((X_i - mu)/sigma)**3))
 # In[ ]:
 
 
+# import numpy as np
+# from scipy import stats
+# from scipy.stats import shapiro
+# num_feat = ["radius_se", "perimeter_se", "area_se", "smoothness_se", "concavity_se", "symmetry_se", "fractal_dimension_se"]
+# # num_feat = ["radius_worst", "perimeter_worst", "area_worst", "smoothness_worst", "concavity_worst", "symmetry_worst", "fractal_dimension_worst"]
+# # num_feat = ["radius_mean", "perimeter_mean", "area_mean", "smoothness_mean", "concavity_mean", "symmetry_mean", "fractal_dimension_mean"]
+# for col in num_feat:
+#     print(f"Columns : {col}")
+#     plt.hist(df[col], density=True, alpha=0.6, color='b')   # 绘制当前特征的直方图，用蓝色表示，透明度为0.6
+#
+#     xmin, xmax = plt.xlim()   # 获取当前直方图的x轴范围
+#     x = np.linspace(xmin, xmax, 100)   # 在xmin和xmax之间生成100个线性间隔的点
+#     p = stats.norm.pdf(x, np.mean(df[col]), np.std(df[col]))   # 计算这些点的正态分布概率密度函数值
+#     plt.plot(x, p, 'k--', linewidth=2)   # 绘制正态分布曲线
+#     plt.title(col)
+#     plt.show()
+#
+#     stat, p = shapiro(df[col])   # 进行Shapiro-Wilk测试，检查数据的正态性
+#     print("Statistics = %.3f, p = %.3f" % (stat, p))
+#
+#     alpha = 0.05   # 设置显著性水平，如果p值大于显著性水平，则数据符合高斯分布，否则不符合
+#     if p > alpha:
+#         print("数据符合高斯分布\n")
+#     else:
+#         print("数据不符合高斯分布\n")
+
 import numpy as np
 from scipy import stats
 from scipy.stats import shapiro
-num_feat = ["radius_se", "perimeter_se", "area_se", "smoothness_se" , "concavity_se", "symmetry_se", "fractal_dimension_se"]
+
+num_feat = ["radius_se", "perimeter_se", "area_se", "smoothness_se", "concavity_se", "symmetry_se",
+            "fractal_dimension_se"]
 for col in num_feat:
     print(f"Columns : {col}")
-    plt.hist(df[col], density=True, alpha=0.6, color='b')   # # 绘制当前特征的直方图，用蓝色表示，透明度为0.6
+    plt.hist(df[col], density=True, alpha=0.6, color='b')
 
-    xmin, xmax = plt.xlim()   # 获取当前直方图的x轴范围
-    x = np.linspace(xmin, xmax, 100)   # 在xmin和xmax之间生成100个线性间隔的点
-    p = stats.norm.pdf(x, np.mean(df[col]), np.std(df[col]))   # 计算这些点的正态分布概率密度函数值
-    plt.plot(x, p, 'k--', linewidth=2)   # 绘制正态分布曲线
+    xmin, xmax = plt.xlim()
+    x = np.linspace(xmin, xmax, 100)
+    p = stats.norm.pdf(x, np.mean(df[col]), np.std(df[col]))
+    plt.plot(x, p, 'k--', linewidth=2)
     plt.show()
-    
-    stat, p = shapiro(df[col])   # 进行Shapiro-Wilk测试，检查数据的正态性
-    print("Statistics = %.3f, p = %.3f" %(stat, p))
-    
-    alpha = 0.05   # 设置显著性水平，如果p值大于显著性水平，则数据符合高斯分布，否则不符合
+
+    stat, p = shapiro(df[col])
+    print("Statistics = %.3f, p = %.3f" % (stat, p))
+
+    alpha = 0.05
     if p > alpha:
-        print("数据符合高斯分布\n")
+        print("Dats looks Gaussian Distribution (fail to reject H0) \n")
     else:
-        print("数据不符合高斯分布\n")
+        print("Data does not look Gaussian Distribution (reject H0) \n")
 
 """
 Shapiro-Wilk测试是一种统计测试，用于检验一组数据是否服从正态分布。这里是关于Shapiro-Wilk测试的一些关键点：
@@ -231,7 +262,7 @@ for col in num_feat:
     Q3 = df[col].quantile(0.75)   # 计算第三四分位数
     IQR = Q3 - Q1   # 计算四分位数间距（IQR）
     df = df[(df[col] >= (Q1 - 1.5*IQR)) & (df[col] <= (Q3 + 1.5*IQR))]   # 更新数据框，只保留没有异常值的行
-    # 使用 1.5 作为异常值阈值是基于统计学中的一个常用规则。这个规则来源于箱形图（boxplot），它是由著名统计学家约翰·图基（John Tukey）提出的
+    # 使用1.5作为异常值阈值是基于统计学中的一个常用规则。这个规则来源于箱形图（boxplot），它是由著名统计学家约翰·图基（John Tukey）提出的
     # 在箱形图中，异常值通常被定义为低于Q1-1.5*IQR 或高于Q3+1.5*IQR的观测值
     # 如选用比1.5大的数，则只有更极端的值才会被识别为异常值；如果选用比1.5小的数，那么就会有更多的正常值被错误地认为是异常值
 print(df)
@@ -262,16 +293,16 @@ DBSCAN聚类法（Density-Based Spatial Clustering of Applications with Noise）
 # In[ ]:
 
 
-plt.figure(figsize=(10, 20))
+plt.figure(figsize=(30, 25))
 for i, col in enumerate(df.columns[:-1], 1):
-    plt.subplot(10, 3, i)
+    plt.subplot(6, 5, i)
     skewness = df[col].skew()   # 计算当前列的偏度
     sns.distplot(df[col], kde=True, label="Skew = %.3f" %(skewness))   # 绘制当前特征的分布图，并在图例中显示偏度值
     plt.title(f"Skewness of {col} Data [outliers removed")
     plt.legend(loc="best")   # 显示图例，位置自动选择最佳位置
     plt.tight_layout()   # 调整子图布局，使之填满整个图形空间
     plt.plot()
-
+plt.show()
 
 # ### You see skewness that many outliers are removed by IQR method.
 
@@ -282,8 +313,8 @@ for i, col in enumerate(df.columns[:-1], 1):
 X = df.iloc[:, :-1]
 y = df.iloc[:, -1]
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-# 用 train_test_split 函数将数据分割为训练集和测试集。test_size=0.2表示测试集占总数据的20%，random_state=0用于确保每次分割都能得到相同的结果
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+# 用train_test_split()函数将数据分割为训练集和测试集。test_size=0.2表示测试集占总数据的25%，random_state=0用于确保每次分割都能得到相同的结果
 
 # # Machine Learning - Classification of diagnosis
 
@@ -563,13 +594,13 @@ Bagging：随机森林使用Bagging（自助聚合）技术来训练每一棵树
 rfc = RandomForestClassifier(n_estimators=100, max_features=0.2, max_depth=2, min_samples_split=2)
 rfc.fit(X_train, y_train)
 y_pred = rfc.predict(X_test)
-print("RFC Train model Score :", rfc.score(X_train, y_train))
-print("RFC Test model Score :", rfc.score(X_test, y_test))
+print("随机森林训练集得分 :", rfc.score(X_train, y_train))
+print("随机森林测试集得分:", rfc.score(X_test, y_test))
 print("----------")
-print("Accuracy Score of RFC :", accuracy_score(y_test, y_pred))
-print("Precision Score of RFC :", precision_score(y_test, y_pred))
-print("Recall Score of RFC :", recall_score(y_test, y_pred))
-print("F1 Score of RFC :", f1_score(y_test, y_pred))
+print("随机森林准确度:", accuracy_score(y_test, y_pred))
+print("随机森林精确度:", precision_score(y_test, y_pred))
+print("随机森林召回率:", recall_score(y_test, y_pred))
+print("随机森林F1得分:", f1_score(y_test, y_pred))
 
 
 # In[ ]:
