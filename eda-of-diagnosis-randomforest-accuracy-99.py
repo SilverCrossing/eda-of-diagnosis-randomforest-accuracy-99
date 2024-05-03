@@ -313,7 +313,7 @@ plt.show()
 X = df.iloc[:, :-1]
 y = df.iloc[:, -1]
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 # 用train_test_split()函数将数据分割为训练集和测试集。test_size=0.25表示测试集占总数据的25%，random_state=0用于确保每次分割都能得到相同的结果
 
 # # Machine Learning - Classification of diagnosis
@@ -604,7 +604,15 @@ print("随机森林F1得分:", f1_score(y_test, y_pred))
 
 
 # In[ ]:
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import make_classification
+from sklearn.tree import export_graphviz
+n_trees = len(rfc.estimators_)
+tree_index = 0
+single_tree = rfc.estimators_[tree_index]
 
+print(single_tree)
 
-
-
+dot_data = export_graphviz(single_tree, out_file=None, feature_names=X.columns,
+                           class_names=['M', 'B'], filled=True, rounded=True, special_characters=True)
+print(dot_data)
