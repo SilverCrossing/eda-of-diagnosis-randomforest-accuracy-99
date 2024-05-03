@@ -123,8 +123,8 @@ df_corr["diagnosis"].sort_values(ascending=False)   # 这样做的目的是为�
 
 
 plt.figure(figsize=(15, 15))
-sns.heatmap(df_corr, fmt=".2f", annot=True, cmap="YlGnBu")   # 创建一个热图（heatmap），用于显示df_corr数据框中的相关系数矩阵
-plt.title("数据相关度矩阵")
+sns.heatmap(df_corr, fmt=".2f", annot=True, cmap="OrRd")   # 创建一个热图（heatmap），用于显示df_corr数据框中的相关系数矩阵
+plt.title("heatmap")
 # fmt=".2f"设置热图中注释的数字格式，.2f表示保留两位小数
 # annot参数设置为True表示在热图的每个单元格中添加注释，即显示相关系数的具体数值
 # cmap参数指定热图的颜色映射方案，"YlGnBu"是一种颜色渐变方案，从黄色（Yellow）到绿色（Green）再到蓝色（Blue）。"OrRd"则是从橙色到红色
@@ -313,8 +313,8 @@ plt.show()
 X = df.iloc[:, :-1]
 y = df.iloc[:, -1]
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-# 用train_test_split()函数将数据分割为训练集和测试集。test_size=0.2表示测试集占总数据的25%，random_state=0用于确保每次分割都能得到相同的结果
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+# 用train_test_split()函数将数据分割为训练集和测试集。test_size=0.25表示测试集占总数据的25%，random_state=0用于确保每次分割都能得到相同的结果
 
 # # Machine Learning - Classification of diagnosis
 
@@ -535,13 +535,13 @@ F1分数的计算公式是F1 = 2*Precision*Recall / (Precision+Recall)
 
 scores = pd.DataFrame(columns=["REG", "SVC", "DTC", "RFC", "GBC", "ABC", "KNC"],
                      index=["ACC", "PREC", "REC", "F1"])
-acc = [reg, svc, dtc, rfc, gbc, abc, knc] = accuracy(X_train, X_test, y_train, y_test)
+acc = [reg, svc, dtc, rfc, gbc, abc, knc] = accuracy(X_train.values, X_test.values, y_train.values, y_test.values)
 scores.iloc[0, :] = acc
-prec = [reg, svc, dtc, rfc, gbc, abc, knc] = precision(X_train, X_test, y_train, y_test)
+prec = [reg, svc, dtc, rfc, gbc, abc, knc] = precision(X_train.values, X_test.values, y_train.values, y_test.values)
 scores.iloc[1, :] = prec
-rec = [reg, svc, dtc, rfc, gbc, abc, knc] = recall(X_train, X_test, y_train, y_test)
+rec = [reg, svc, dtc, rfc, gbc, abc, knc] = recall(X_train.values, X_test.values, y_train.values, y_test.values)
 scores.iloc[2, :] = rec
-f_1 = [reg, svc, dtc, rfc, gbc, abc, knc] = f1(X_train, X_test, y_train, y_test)
+f_1 = [reg, svc, dtc, rfc, gbc, abc, knc] = f1(X_train.values, X_test.values, y_train.values, y_test.values)
 scores.iloc[3, :] = f_1
 print(scores)
 
