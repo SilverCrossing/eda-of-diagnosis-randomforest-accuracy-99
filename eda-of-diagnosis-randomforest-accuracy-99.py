@@ -594,19 +594,52 @@ Bagging：随机森林使用Bagging（自助聚合）技术来训练每一棵树
 rfc = RandomForestClassifier(n_estimators=100, max_features=0.2, max_depth=2, min_samples_split=2)
 rfc.fit(X_train, y_train)
 y_pred = rfc.predict(X_test)
-print("随机森林训练集得分 :", rfc.score(X_train, y_train))
+print("随机森林训练集得分:", rfc.score(X_train, y_train))
 print("随机森林测试集得分:", rfc.score(X_test, y_test))
-print("----------")
 print("随机森林准确度:", accuracy_score(y_test, y_pred))
 print("随机森林精确度:", precision_score(y_test, y_pred))
 print("随机森林召回率:", recall_score(y_test, y_pred))
 print("随机森林F1得分:", f1_score(y_test, y_pred))
+print("----------")
 
+reg = LogisticRegression()
+reg.fit(X_train, y_train)
+y_pred = reg.predict(X_test)
+print("逻辑回归训练集得分:", reg.score(X_train, y_train))
+print("逻辑回归测试集得分:", reg.score(X_test, y_test))
+print("逻辑回归准确度:", accuracy_score(y_test, y_pred))
+print("逻辑回归精确度:", precision_score(y_test, y_pred))
+print("逻辑回归召回率:", recall_score(y_test, y_pred))
+print("逻辑回归F1得分:", f1_score(y_test, y_pred))
+print("----------")
+
+svc = SVC()
+svc.fit(X_train, y_train)
+y_pred = svc.predict(X_test)
+print("支持向量机训练集得分:", svc.score(X_train, y_train))
+print("支持向量机测试集得分:", svc.score(X_test, y_test))
+print("支持向量机准确度:", accuracy_score(y_test, y_pred))
+print("支持向量机精确度:", precision_score(y_test, y_pred))
+print("支持向量机召回率:", recall_score(y_test, y_pred))
+print("支持向量机F1得分:", f1_score(y_test, y_pred))
+print("----------")
+
+knc = KNeighborsClassifier()
+knc.fit(X_train, y_train)
+y_pred = knc.predict(X_test.values)
+print("K最近邻训练集得分:", knc.score(X_train.values, y_train.values))
+print("K最近邻测试集得分:", knc.score(X_test.values, y_test.values))
+print("K最近邻准确度:", accuracy_score(y_test, y_pred))
+print("K最近邻精确度:", precision_score(y_test, y_pred))
+print("K最近邻召回率:", recall_score(y_test, y_pred))
+print("K最近邻F1得分:", f1_score(y_test, y_pred))
+print("----------")
 
 # In[ ]:
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_classification
 from sklearn.tree import export_graphviz
+import matplotlib.pyplot as plt
 n_trees = len(rfc.estimators_)
 tree_index = 0
 single_tree = rfc.estimators_[tree_index]
@@ -616,3 +649,4 @@ print(single_tree)
 dot_data = export_graphviz(single_tree, out_file=None, feature_names=X.columns,
                            class_names=['M', 'B'], filled=True, rounded=True, special_characters=True)
 print(dot_data)
+
